@@ -304,12 +304,11 @@ def handle_withdraw(update, command, user_id, language, balance, account_number)
     "❌ <b>خطأ:</b> رصيدك غير كافٍ لإجراء هذه العملية.",
     parse_mode='HTML')
     except (ValueError, IndexError):
-    update.message.reply_text(
-        "❌ <b>خطأ:</b> صيغة الأمر غير صحيحة.\n"
-        "اكتب الأمر كالتالي:\n"
-        "<b>سحب \"المبلغ\"</b>\n"
-        "مثال: <code>سحب 100</code> لسحب 100 وحدة.",
-        parse_mode='HTML')
+        update.message.reply_text(
+            "❌ <b>خطأ:</b> صيغة الأمر غير صحيحة.\n"
+            "اكتب الأمر كالتالي:\n"
+            "<b>سحب \"المبلغ\"</b>\n"
+            "مثال: <code>سحب 100</code> لسحب 100 وحدة.",parse_mode='HTML')
 
 def handle_transfer(update, command, user_id, language, balance, account_number):
     try:
