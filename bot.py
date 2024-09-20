@@ -214,7 +214,7 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(f"❌ حدث خطأ أثناء معالجة الأمر: {str(e)}")
 def handle_command(update: Update, context: CallbackContext) -> None:
         command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
-
+      try:
         if command == 'اقتراح':
             suggestion(update, context)
   
@@ -392,3 +392,4 @@ def handle_transfer(update, command, user_id, language, balance, account_number)
 
 def handle_balance(update, balance):
     update.message.reply_text(f"💰 رصيدك الحالي هو: <b>{balance}</b>.", parse_mode='HTML')
+    
