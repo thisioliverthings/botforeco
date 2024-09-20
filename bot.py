@@ -202,7 +202,7 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
         # التعامل مع الأوامر المختلفة
         if command == '/start':
             handle_start(update, context)  # بدء التفاعل
-        elif command in ['help', 'help/', '/help', 'مساعدة', 'مساعده']:
+        elif command.lower() in ['help', 'help/', '/help', 'مساعدة', 'مساعده']:
             handle_help(update, context)  # عرض المساعدة
         elif command == 'حسابي':
             handle_account_info(update, language, balance, account_number)  # عرض معلومات الحساب
@@ -212,12 +212,14 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("❌ الأمر غير معروف. حاول مرة أخرى.")  # رسالة للأوامر غير المعروفة
     except Exception as e:
         update.message.reply_text(f"❌ حدث خطأ أثناء معالجة الأمر: {str(e)}")
+
+
 def handle_command(update: Update, context: CallbackContext) -> None:
-        command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
-      try:
+    command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
+
+    try:
         if command == 'اقتراح':
-            suggestion(update, context)
-  
+            suggestion(update, context)  # استدعاء دالة الاقتراحات
         elif command == 'تغيير اللغة':
             handle_change_language(update)  # تغيير اللغة
         elif command == 'settings':
@@ -232,13 +234,10 @@ def handle_command(update: Update, context: CallbackContext) -> None:
             handle_transfer(update, command, user_id, language, balance, account_number)  # تحويل الأموال
         elif command == 'رصيدي':
             handle_balance(update, balance)  # عرض الرصيد
-        
+        else:
+            update.message.reply_text("❌ الأمر غير معروف. حاول مرة أخرى.")  # رسالة افتراضية للأوامر غير المعروفة
     except Exception as e:
-        # تسجيل أي أخطاء تظهر
-        logger.error(f"Error handling command: {e}")
-
-# دالة لمعالجة عرض المساعدة
-
+        logger.error(f"Error handling command: {e}")  # تسجيل أي أخطاء تظهر
 
 def handle_start(update, context):
     handle_message(update, context)
