@@ -183,7 +183,7 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
         logger.error(f"Error handling command: {e}")
 
 # دالة لمعالجة عرض المساعدة
-ة
+
 
 def handle_start(update, context):
     handle_message(update, context)
