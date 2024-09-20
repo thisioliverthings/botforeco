@@ -323,7 +323,7 @@ def button(update, context):
     if query.data == 'terms':
         query.edit_message_text(text=terms_text, parse_mode='HTML')
     elif query.data == 'privacy':
-        query.edit_message_text(text=privacy_text, parse_mode='HTML'))
+        query.edit_message_text(text=privacy_text, parse_mode='HTML')
 
 def handle_deposit(update, command, user_id, language, balance, account_number):
     try:
