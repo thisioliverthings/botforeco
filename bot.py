@@ -215,7 +215,7 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
 def handle_command(update: Update, context: CallbackContext) -> None:
         command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
 
-        elif command == 'اقتراح':
+        if command == 'اقتراح':
         suggestion(update, context)
   
         elif command == 'تغيير اللغة':
