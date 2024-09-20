@@ -150,42 +150,66 @@ def button(update: Update, context: CallbackContext) -> None:
     elif query.data == 'help_menu':
         help_command(update, context)
 
+# دالة لمعالجة الأوامر المدخلة من المستخدم
 def handle_commands(update: Update, context: CallbackContext) -> None:
-    command = update.message.text
-    user_id = update.message.from_user.id
-    language, balance, account_number = load_user_data(user_id)
+    command = update.message.text  # نص الأمر المدخل
+    user_id = update.message.from_user.id  # معرف المستخدم
+    language, balance, account_number = load_user_data(user_id)  # تحميل بيانات المستخدم
 
     try:
+        # التعامل مع الأوامر المختلفة
         if command == '/start':
-            handle_start(update, context)
-        elif command == 'help':
-            handle_help(update, context)
+            handle_start(update, context)  # بدء التفاعل
+        elif command in ['help', '/help', 'مساعدة', 'مساعده']:
+            handle_help(update, context)  # عرض المساعدة
         elif command == 'حسابي':
-            handle_account_info(update, language, balance, account_number)
+            handle_account_info(update, language, balance, account_number)  # عرض معلومات الحساب
         elif command == 'تغيير اللغة':
-            handle_change_language(update)
+            handle_change_language(update)  # تغيير اللغة
         elif command == 'settings':
-            handle_settings(update)
+            handle_settings(update)  # إعدادات المستخدم
         elif command == 'info':
-            handle_info(update)
+            handle_info(update)  # معلومات عن البوت
         elif command.startswith('إيداع'):
-            handle_deposit(update, command, user_id, language, balance, account_number)
+            handle_deposit(update, command, user_id, language, balance, account_number)  # إيداع الأموال
         elif command.startswith('سحب'):
-            handle_withdraw(update, command, user_id, language, balance, account_number)
+            handle_withdraw(update, command, user_id, language, balance, account_number)  # سحب الأموال
         elif command.startswith('تحويل'):
-            handle_transfer(update, command, user_id, language, balance, account_number)
+            handle_transfer(update, command, user_id, language, balance, account_number)  # تحويل الأموال
         elif command == 'رصيدي':
-            handle_balance(update, balance)
+            handle_balance(update, balance)  # عرض الرصيد
     except Exception as e:
+        # تسجيل أي أخطاء تظهر
         logger.error(f"Error handling command: {e}")
+
+# دالة لمعالجة عرض المساعدة
+ة
 
 def handle_start(update, context):
     handle_message(update, context)
 
+# دالة لمعالجة عرض المساعدة
 def handle_help(update, context):
-    # إضافة محتوى المساعدة هنا
-    update.message.reply_text("📚 قائمة الأوامر: ...")
-
+    # نص المساعدة المبدئي
+    help_text = (
+        "📚 <b>قائمة الأوامر:</b>\n"
+        "للحصول على تفاصيل حول أي قسم، اضغط على الزر أدناه."
+    )
+    reply_markup = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("📜 الأوامر الأساسية", callback_data='help_section_1'),
+            InlineKeyboardButton("📊 نظام النقاط والمحفظة", callback_data='help_section_2')
+        ],
+        [
+            InlineKeyboardButton("🌐 إدارة اللغة", callback_data='help_section_3'),
+            InlineKeyboardButton("💼 العضويات والاشتراكات", callback_data='help_section_4')
+        ],
+        [
+            InlineKeyboardButton("🎁 عروض ومكافآت خاصة", callback_data='help_section_5'),
+            InlineKeyboardButton("🔙 إغلاق", callback_data='close_help')
+        ]
+    ])
+    update.message.reply_text(text=help_text, parse_mode='HTML', reply_markup=reply_markup)
 def handle_account_info(update, language, balance, account_number):
     update.message.reply_text(f"📊 معلومات حسابك:\n- اللغة: {language}\n- الرصيد: {balance}\n- رقم الحساب: {account_number}")
 
