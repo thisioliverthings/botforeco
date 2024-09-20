@@ -194,7 +194,7 @@ def handle_help(update, context):
     
 # دالة لمعالجة الأوامر المدخلة من المستخدم
 def handle_commands(update: Update, context: CallbackContext) -> None:
-    command = update.message.text  # نص الأمر المدخل
+    command = update.message.text.strip()  # إزالة المسافات الزائدة من نص الأمر
     user_id = update.message.from_user.id  # معرف المستخدم
     language, balance, account_number = load_user_data(user_id)  # تحميل بيانات المستخدم
 
@@ -202,10 +202,16 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
         # التعامل مع الأوامر المختلفة
         if command == '/start':
             handle_start(update, context)  # بدء التفاعل
-        elif command in ['help','help/', '/help', 'مساعدة', 'مساعده']:
+        elif command in ['help', 'help/', '/help', 'مساعدة', 'مساعده']:
             handle_help(update, context)  # عرض المساعدة
         elif command == 'حسابي':
             handle_account_info(update, language, balance, account_number)  # عرض معلومات الحساب
+        elif command.startswith('اقتراح'):
+            suggestion(update, context)  # استدعاء دالة الاقتراحات
+        else:
+            update.message.reply_text("❌ الأمر غير معروف. حاول مرة أخرى.")  # رسالة للأوامر غير المعروفة
+    except Exception as e:
+        update.message.reply_text(f"❌ حدث خطأ أثناء معالجة الأمر: {str(e)}")
         def handle_command(update: Update, context: CallbackContext) -> None:
     command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
 
