@@ -142,14 +142,43 @@ def button(update: Update, context: CallbackContext) -> None:
             "3️⃣ <b>المسابقات الشهرية:</b> شارك في المسابقات الشهرية باستخدام '<code>مسابقة الشهر</code>'."
         )
     }
-    
-    help_text = help_texts.get(query.data)
-    if help_text:
-        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 رجوع", callback_data='help_menu')]])
-        query.edit_message_text(text=help_text, parse_mode='HTML', reply_markup=reply_markup)
-    elif query.data == 'help_menu':
-        help_command(update, context)
 
+    reply_markup_help = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔙 رجوع", callback_data='help_menu')],
+        [InlineKeyboardButton("❌ خروج", callback_data='confirm_exit')]
+    ])
+    
+    if query.data in help_texts:
+        query.edit_message_text(text=help_texts[query.data], parse_mode='HTML', reply_markup=reply_markup_help)
+    elif query.data == 'help_menu':
+        reply_markup_menu = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📜 الأوامر الأساسية", callback_data='help_section_1')],
+            [InlineKeyboardButton("📊 نظام النقاط والمحفظة", callback_data='help_section_2')],
+            [InlineKeyboardButton("🌐 إدارة اللغة", callback_data='help_section_3')],
+            [InlineKeyboardButton("💼 العضويات والاشتراكات", callback_data='help_section_4')],
+            [InlineKeyboardButton("🎁 عروض ومكافآت خاصة", callback_data='help_section_5')],
+            [InlineKeyboardButton("❌ خروج", callback_data='confirm_exit')]
+        ])
+        query.edit_message_text(text="📚 مرحبًا! اختر قسمًا لعرض الشرح:", reply_markup=reply_markup_menu)
+    elif query.data == 'confirm_exit':
+        reply_markup_confirm = InlineKeyboardMarkup([
+            [InlineKeyboardButton("✅ نعم، الخروج", callback_data='exit_help')],
+            [InlineKeyboardButton("🔙 لا، العودة", callback_data='help_menu')]
+        ])
+        query.edit_message_text(text="⚠️ هل أنت متأكد أنك تريد الخروج؟", reply_markup=reply_markup_confirm)
+    elif query.data == 'exit_help':
+        query.edit_message_text(text="✅ تم الخروج من قائمة المساعدة. إذا كنت بحاجة إلى مساعدة أخرى، اكتب 'help'.", reply_markup=None)
+
+def handle_help(update, context):
+    reply_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📜 الأوامر الأساسية", callback_data='help_section_1')],
+        [InlineKeyboardButton("📊 نظام النقاط والمحفظة", callback_data='help_section_2')],
+        [InlineKeyboardButton("🌐 إدارة اللغة", callback_data='help_section_3')],
+        [InlineKeyboardButton("💼 العضويات والاشتراكات", callback_data='help_section_4')],
+        [InlineKeyboardButton("🎁 عروض ومكافآت خاصة", callback_data='help_section_5')],
+        [InlineKeyboardButton("❌ خروج", callback_data='confirm_exit')]
+    ])
+    update.message.reply_text("📚 مرحبًا! اختر قسمًا لعرض الشرح:", reply_markup=reply_markup)
 # دالة لمعالجة الأوامر المدخلة من المستخدم
 def handle_commands(update: Update, context: CallbackContext) -> None:
     command = update.message.text  # نص الأمر المدخل
