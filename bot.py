@@ -273,19 +273,6 @@ def handle_change_language(update):
 def handle_settings(update):
     update.message.reply_text("🛠️ هنا يمكنك ضبط إعداداتك.")
 
-def handle_info(update):
-    
-
-# نص بنود الخدمة
-
-# التعامل مع الأزرار
-def button(update, context):
-    query = update.callback_query
-    if query.data == 'terms':
-        query.edit_message_text(text=terms_text, parse_mode='HTML')
-    elif query.data == 'privacy':
-        query.edit_message_text(text=privacy_text, parse_mode='HTML')
-
 def handle_deposit(update, command, user_id, language, balance, account_number):
     try:
         amount = float(command.split()[1])
