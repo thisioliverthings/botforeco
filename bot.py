@@ -212,8 +212,8 @@ def handle_commands(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("❌ الأمر غير معروف. حاول مرة أخرى.")  # رسالة للأوامر غير المعروفة
     except Exception as e:
         update.message.reply_text(f"❌ حدث خطأ أثناء معالجة الأمر: {str(e)}")
-        def handle_command(update: Update, context: CallbackContext) -> None:
-    command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
+def handle_command(update: Update, context: CallbackContext) -> None:
+        command = update.message.text.split()[0].lower()  # تحديد الأمر المدخل
 
         elif command == 'اقتراح':
         suggestion(update, context)
