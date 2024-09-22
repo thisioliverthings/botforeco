@@ -8,7 +8,7 @@ import pylint.lint
 from io import StringIO
 from tempfile import NamedTemporaryFile
 from typing import Dict, Any
-
+from telegram.error import NetworkError, RetryAfter, TimedOut
 
 class CodeStorage:
     def __init__(self, storage_file: str = "codes.json"):
