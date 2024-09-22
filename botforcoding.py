@@ -213,8 +213,18 @@ class PythonBot:
         return "\n".join(suggestions)
 
     def run(self) -> None:
-        self.updater.start_polling()
-        self.updater.idle()
+        while True:
+            try:
+                print("Starting the bot...")
+                self.updater.start_polling()  # Start the bot
+                self.updater.idle()
+            except (NetworkError, TimedOut, RetryAfter) as e:
+                print(f"Network error occurred: {str(e)}. Retrying in 10 seconds...")
+                time.sleep(10)  # Wait before retrying
+            except Exception as e:
+                print(f"An unexpected error occurred: {str(e)}. Exiting.")
+                break
+
 
 
 if __name__ == "__main__":
