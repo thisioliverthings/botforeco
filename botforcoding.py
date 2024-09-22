@@ -220,4 +220,4 @@ class PythonBot:
 if __name__ == "__main__":
     TOKEN = "8119443898:AAFwm5E368v-Ov-M_XGBQYCJxj1vMDQbv-0"  # ضع التوكن الخاص بك هنا
     bot = PythonBot(TOKEN)
-    bot.run()f-else
+    bot.run()
