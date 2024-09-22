@@ -1,14 +1,14 @@
 import os
 import json
 import time
+import subprocess
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackContext, CallbackQueryHandler
 import autopep8
 import pylint.lint
 from io import StringIO
 from tempfile import NamedTemporaryFile
-from typing import Dict, Any
-from telegram.error import NetworkError, RetryAfter, TimedOut
+from typing import Dict
 
 class CodeStorage:
     def __init__(self, storage_file: str = "codes.json"):
@@ -75,7 +75,7 @@ class PythonBot:
             f"تم تطوير هذا البوت بواسطة: {developer_name}\n"
             f"اختر ما تريد القيام به من الأزرار أدناه:",
             reply_markup=reply_markup,
-            parse_mode='HTML'  
+            parse_mode='HTML'
         )
 
     def handle_button_click(self, update: Update, context: CallbackContext) -> None:
@@ -117,10 +117,8 @@ class PythonBot:
             update.message.reply_text(f"الكود بعد التنسيق:\n<pre><code>{formatted_code}</code></pre>", parse_mode='HTML')
         elif callback_data == 'lint_code':
             lint_result = self.lint_code(code)
-            ai_suggestions = self.provide_ai_suggestions(lint_result)
             update.message.reply_text(
-                f"نتائج التحليل:\n<pre><code>{lint_result}</code></pre>\n"
-                f"اقتراحات الذكاء الاصطناعي:\n{ai_suggestions}",
+                f"نتائج التحليل:\n<pre><code>{lint_result}</code></pre>",
                 parse_mode='HTML'
             )
 
@@ -145,9 +143,9 @@ class PythonBot:
         if not codes:
             update.message.reply_text("لم تقم بحفظ أي أكواد بعد.")
         else:
-            response = "أكوادك المحفوظة:<br>"
+            response = "أكوادك المحفوظة:\n"
             for code_name, code in codes.items():
-                response += f"<b>{code_name}:</b><br><pre><code>{code}</code></pre><br>"
+                response += f"<b>{code_name}:</b>\n<pre><code>{code}</code></pre>\n"
             update.message.reply_text(response, parse_mode='HTML')
 
     def delete_codes(self, update: Update, context: CallbackContext) -> None:
@@ -184,33 +182,11 @@ class PythonBot:
     def lint_code(self, code: str) -> str:
         pylint_output = StringIO()
         with NamedTemporaryFile("w+", delete=False) as tmp_file:
-            tmp_file.write(code)
+            tmp_file.write(code.encode('utf-8'))
             tmp_file.flush()
-            pylint.lint.Run([tmp_file.name], do_exit=False, stdout=pylint_output)
+            pylint.lint.Run([tmp_file.name], stdout=pylint_output)  # إزالة do_exit
         lint_result = pylint_output.getvalue()
-        ai_suggestions = self.provide_ai_suggestions(lint_result)
-        return f"{lint_result}\n\nاقتراحات الذكاء الاصطناعي:\n{ai_suggestions}"
-
-    def provide_ai_suggestions(self, lint_output: str) -> str:
-        suggestions = []
-
-        if "indentation" in lint_output:
-            suggestions.append("تحقق من استخدام المسافات بشكل صحيح لتنظيم الكود.")
-        if "unused-variable" in lint_output:
-            suggestions.append("قم بإزالة المتغيرات غير المستخدمة لتحسين الكود.")
-        if "missing-docstring" in lint_output:
-            suggestions.append("أضف توثيقات (docstrings) إلى وظائفك لتوضيح الغرض منها.")
-        if "too-many-branches" in lint_output:
-            suggestions.append("قد يكون لديك عدد كبير من التفرعات (i). حاول تقليل التعقيد باستخدام استراتيجيات مثل التجريد.")
-        if "too-many-arguments" in lint_output:
-            suggestions.append("وظيفتك تحتوي على عدد كبير من المعاملات. حاول تقليلها من خلال تقسيم الكود إلى وظائف أصغر.")
-        if "line-too-long" in lint_output:
-            suggestions.append("بعض الأسطر طويلة جدًا. حاول تقسيمها لتصبح أكثر قابلية للقراءة.")
-
-        if not suggestions:
-            return "الكود يبدو جيدًا ولا توجد اقتراحات كبيرة."
-
-        return "\n".join(suggestions)
+        return lint_result
 
     def run(self) -> None:
         while True:
@@ -218,14 +194,9 @@ class PythonBot:
                 print("Starting the bot...")
                 self.updater.start_polling()  # Start the bot
                 self.updater.idle()
-            except (NetworkError, TimedOut, RetryAfter) as e:
-                print(f"Network error occurred: {str(e)}. Retrying in 10 seconds...")
-                time.sleep(10)  # Wait before retrying
             except Exception as e:
                 print(f"An unexpected error occurred: {str(e)}. Exiting.")
                 break
-
-
 
 if __name__ == "__main__":
     TOKEN = "8119443898:AAFwm5E368v-Ov-M_XGBQYCJxj1vMDQbv-0"  # ضع التوكن الخاص بك هنا
